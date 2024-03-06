@@ -3,7 +3,7 @@
 // This pipeline's code is in https://github.com/the-mama-ai/jenkins-build-shared
 
 
-mamaPythonK8sDeploy('machi-molsearch-app',
+mamaPythonK8sDeploy('excalidraw',
                     deployMode: 'helm',  
                     bypassUnitTestStage: false,
                     minimalCodeCoverage: 5,
