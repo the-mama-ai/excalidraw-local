@@ -4,6 +4,7 @@ services:
   excalidraw:
     build:
       context: .
+      target: development
       args:
         - NODE_ENV=development
     container_name: excalidraw
