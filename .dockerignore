@@ -1,10 +1,11 @@
-!.env.development
-!.env.production
-!.eslintrc.json
-!.npmrc
-!.prettierrc
-!package.json
-!public/
-!packages/
-!tsconfig.json
-!yarn.lock
+# *
+# !.env.development
+# !.env.production
+# !.eslintrc.json
+# !.npmrc
+# !.prettierrc
+# !package.json
+# !public/
+# !packages/
+# !tsconfig.json
+# !yarn.lock
