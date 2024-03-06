@@ -1,0 +1,12 @@
+ingress:
+  private:
+    enabled: true
+    hosts:
+    - host: excalidraw.ch.themama.ai
+      paths:
+        - path: /
+          pathType: Prefix
+    tls:
+    - secretName: excalidraw.ch.themama.ai
+      hosts:
+        - excalidraw.ch.themama.ai

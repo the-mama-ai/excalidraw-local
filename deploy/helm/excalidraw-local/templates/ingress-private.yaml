@@ -1,0 +1,1 @@
+{{- include "project.ingress" (list . "private" ) -}}

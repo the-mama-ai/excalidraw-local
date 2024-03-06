@@ -1,0 +1,137 @@
+# Default values for cheese-streamlit.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: 574228940924.dkr.ecr.eu-central-1.amazonaws.com/themama.ai/excalidraw-local
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+containerPort: 8501
+#dataMountPath: "/opt/themama.ai"
+
+
+# Put in the contents *layout* (no real secret values) of the secret.yaml in the project default secret
+# You'll be overriding these particular values later (locally as 'helm install --values <secret-overrides>')
+secret:
+  something: "very secret"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  # Disable all Linux capabilities (https://man7.org/linux/man-pages/man7/capabilities.7.html)
+  capabilities:
+    drop:
+    - ALL
+  # Disallow running as root
+  runAsNonRoot: true
+  # Run as mama (see project's Dockerfile)
+  runAsUser: 2112
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  private:
+    enabled: false
+    className: "nginx-private"
+    annotations:
+      cert-manager.io/cluster-issuer: "mama-interm-ca"
+      #nginx.ingress.kubernetes.io/app-root: /docs
+    hosts: []
+    #- host: xxx.ch.themama.ai
+    #  paths:
+    #    - path: /
+    #      pathType: Prefix
+    tls: []
+    #- secretName: xxx.ch.themama.ai
+    #  hosts:
+    #    - xxx.ch.themama.ai
+
+  public:
+    enabled: false
+    className: "nginx-public"
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt"
+
+      # Below there are some commonly used annotations
+      #nginx.ingress.kubernetes.io/app-root: /api/docs
+      #nginx.ingress.kubernetes.io/proxy-body-size: 100m
+      #nginx.ingress.kubernetes.io/proxy-buffering: "off"
+      #nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+      #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+      #nginx.ingress.kubernetes.io/rewrite-target: /$1
+      #nginx.ingress.kubernetes.io/server-snippet: |
+
+    hosts: []
+    #- host: xxx.dev.themama.cloud  # POCs should go here
+    #  paths:
+    #    - path: /api
+    #      pathType: Prefix
+    tls: []
+    #- secretName: xxx.dev.themama.cloud
+    #  hosts:
+    #    - xxx.dev.themama.cloud
+
+
+
+resources:
+  # Default (very small) resource spec. You may need to tune/increase the actual values a bit.
+  # For more datails see: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#how-pods-with-resource-requests-are-scheduled
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+
+podDisruptionBudget:
+  enabled: true
+  spec:
+    #minAvailable: 1
+    maxUnavailable: 1
+
+nodeSelector: {}
+
+tolerations: []
+
+
+## @param podAntiAffinityPreset Pod anti-affinity preset. Ignored if `affinity` is set.
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+podAntiAffinityPreset:
+  ## @param podAntiAffinityPreset Allowed values: `soft` or `hard` or `null` to disable
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  type: soft
+  topologyKey: kubernetes.io/hostname
+
+## @param affinity Affinity for deployment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## NOTE: `podAffinityPreset` will be ignored when it's set
+
+affinity: {}
+
+# Try to distribute pods equally between physical machines
+topologySpreadConstraints:
+  enabled: true
+  maxSkew: 1
+  topologyKey: "topology.kubernetes.io/zone"
+  whenUnsatisfiable: ScheduleAnyway
