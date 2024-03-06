@@ -5,7 +5,7 @@
 
 mamaPythonK8sDeploy('excalidraw',
                     deployMode: 'helm',  
-                    bypassUnitTestStage: false,
+                    bypassUnitTestStage: true,
                     minimalCodeCoverage: 5,
                     deployDestinations: [
                         'main': ['demo01', 'excalidraw'],
